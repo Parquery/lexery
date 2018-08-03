@@ -32,4 +32,5 @@ setup(
     packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
     install_requires=[],
     extras_require={'dev': ['mypy==0.560', 'pylint==1.8.2', 'yapf==0.20.2']},
-    py_modules=['lexery'])
+    py_modules=['lexery'],
+    package_data={"lexery": ["py.typed"]})
