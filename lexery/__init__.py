@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Provide a simple lexer based on regular expressions."""
 import re
-from typing import List, Pattern
+from typing import List, Pattern, Optional
 
 
 class Token:
@@ -79,17 +79,95 @@ class Error(Exception):
 WHITESPACE_RE = re.compile(r'\s')
 
 
+class _Lexing:
+    """Keep state of a single lexing."""
+
+    def __init__(self, unmatched_identifier: Optional[str] = None) -> None:
+        """
+        Initialize.
+
+        :param unmatched_identifier:
+            if set, unmatched characters are accumulated and emitted in a token with this identifier.
+        """
+        self.unmatched_identifier = unmatched_identifier
+
+        self.tokens = [[]]  # type: List[List[Token]]
+
+        self._unmatched_accumulator = []  # type: List[str]
+        self._unmatched_pos = -1
+        self._unmatched_lineno = -1
+
+    def emit_matched_token(self, token: Token) -> None:
+        """Emit all accumulated unmatched characters as a unmatched token and emit this token."""
+        if self._unmatched_accumulator:
+            assert self.unmatched_identifier is not None
+
+            self.tokens[-1].append(
+                Token(
+                    identifier=self.unmatched_identifier,
+                    content=''.join(self._unmatched_accumulator),
+                    position=self._unmatched_pos,
+                    lineno=self._unmatched_lineno))
+
+            self._unmatched_accumulator = []
+
+        self.tokens[-1].append(token)
+
+    def start_new_line(self) -> None:
+        """Start a new token line."""
+        if self._unmatched_accumulator:
+            assert self.unmatched_identifier is not None
+
+            self.tokens[-1].append(
+                Token(
+                    identifier=self.unmatched_identifier,
+                    content=''.join(self._unmatched_accumulator),
+                    position=self._unmatched_pos,
+                    lineno=self._unmatched_lineno))
+
+            self._unmatched_accumulator = []
+
+        self.tokens.append([])
+
+    def accumulate_unmatched(self, character: str, position: int, lineno: int) -> None:
+        """Add the unmatched character to the unmatched accumulator."""
+        if not self._unmatched_accumulator:
+            self._unmatched_pos = position
+            self._unmatched_lineno = lineno
+
+        self._unmatched_accumulator.append(character)
+
+    def finish(self) -> None:
+        """Signal the end of the lexing."""
+        if self._unmatched_accumulator:
+            assert self.unmatched_identifier is not None
+
+            self.tokens[-1].append(
+                Token(
+                    identifier=self.unmatched_identifier,
+                    content=''.join(self._unmatched_accumulator),
+                    position=self._unmatched_pos,
+                    lineno=self._unmatched_lineno))
+
+            self._unmatched_accumulator = []
+
+
 class Lexer:
     """Lex the text given the rules table."""
 
-    def __init__(self, rules: List[Rule], skip_whitespace: bool = False) -> None:
+    def __init__(self, rules: List[Rule], skip_whitespace: bool = False,
+                 unmatched_identifier: Optional[str] = None) -> None:
         """
         Initialize.
 
         :param rules: to match the tokens
+        :param skip_whitespace: if True, white-spaces are skipped
+        :param unmatched_identifier:
+            if set, unmatched characters are accumulated in a list and lexed as a token with the given identifier
         """
         self.rules = rules
         self.skip_whitespace = skip_whitespace
+        self.unmatched_identifier = unmatched_identifier
 
     def lex(self, text: str) -> List[List[Token]]:
         """
@@ -99,11 +177,10 @@ class Lexer:
         :return: list of matched tokens
         """
         lines = text.splitlines()
-        tokens = []  # type: List[List[Token]]
+
+        lexing = _Lexing(unmatched_identifier=self.unmatched_identifier)
 
         for lineno, line in enumerate(lines):
-            line_tokens = []
-
             position = 0
             while position < len(line):
                 mtched = False
@@ -112,7 +189,8 @@ class Lexer:
                     if mtch:
                         token = Token(
                             identifier=rule.identifier, content=mtch.group(), position=position, lineno=lineno)
-                        line_tokens.append(token)
+
+                        lexing.emit_matched_token(token=token)
 
                         position = mtch.end()
                         mtched = True
@@ -125,9 +203,17 @@ class Lexer:
                             position = mtch.end()
                             mtched = True
 
+                if not mtched and self.unmatched_identifier is not None:
+                    lexing.accumulate_unmatched(character=line[position], position=position, lineno=lineno)
+                    position += 1
+                    mtched = True
+
                 if not mtched:
                     raise Error(line=line, position=position, lineno=lineno)
 
-            tokens.append(line_tokens)
+            if lineno < len(lines) - 1:
+                lexing.start_new_line()
 
-        return tokens
+        lexing.finish()
+
+        return lexing.tokens
