@@ -24,8 +24,15 @@ Usage
     ...     skip_whitespace=True)
     >>>
     >>> tokens = lexer.lex(text=text)
-    >>> tokens
-    [[Token('identifier', 'crop', 0, 0), Token('lpar', '(', 9, 0), Token('number', '20', 11, 0),
-    Token('comma', ',', 13, 0), Token('number', '30', 15, 0), Token('comma', ',', 17, 0),
-    Token('number', '40', 19, 0), Token('comma', ',', 21, 0), Token('number', '10', 23, 0), Token('rpar', ')', 26, 0),
-    Token('semi', ';', 28, 0)]]
+    >>> assert tokens == [[
+    ...     lexery.Token('identifier', 'crop', 0, 0), 
+    ...     lexery.Token('lpar', '(', 9, 0),
+    ...     lexery.Token('number', '20', 11, 0),
+    ...     lexery.Token('comma', ',', 13, 0),
+    ...     lexery.Token('number', '30', 15, 0),
+    ...     lexery.Token('comma', ',', 17, 0),
+    ...     lexery.Token('number', '40', 19, 0),
+    ...     lexery.Token('comma', ',', 21, 0),
+    ...     lexery.Token('number', '10', 23, 0),
+    ...     lexery.Token('rpar', ')', 26, 0),
+    ...     lexery.Token('semi', ';', 28, 0)]]

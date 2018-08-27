@@ -100,6 +100,7 @@ class Lexer:
 
                         position = mtch.end()
                         mtched = True
+                        break
 
                 if not mtched:
                     if self.skip_whitespace:
