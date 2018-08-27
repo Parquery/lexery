@@ -42,6 +42,11 @@ def main() -> int:
     print("Pydocstyle'ing...")
     subprocess.check_call(["pydocstyle", "lexery"], cwd=repo_root.as_posix())
 
+    print("Doctest'ing ...")
+    subprocess.check_call(['python', '-m', 'doctest', 'README.rst'])
+    subprocess.check_call(
+        ['python', '-m', 'doctest'] + [pth.as_posix() for pth in pathlib.Path("lexery").glob("**/*.py")])
+
     print("Testing...")
     subprocess.check_call(
         ["coverage", "run", "--source", "lexery", "-m", "unittest", "discover", "tests"], cwd=repo_root.as_posix())
