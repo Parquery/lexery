@@ -1,5 +1,11 @@
 Lexery
 ======
+.. image:: https://travis-ci.com/Parquery/lexery.svg?branch=master
+    :target: https://travis-ci.com/Parquery/lexery
+
+.. image:: https://coveralls.io/repos/github/Parquery/lexery/badge.svg?branch=master
+    :target: https://coveralls.io/github/Parquery/lexery?branch=master
+
 A simple lexer based on regular expressions.
 
 Inspired by https://eli.thegreenplace.net/2013/06/25/regex-based-lexical-analysis-in-python-and-javascript
