@@ -15,7 +15,7 @@ with open(os.path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='lexery',
-    version='1.0.2',
+    version='1.0.3',
     description='A simple lexer based on regular expressions',
     long_description=long_description,
     url='https://github.com/Parquery/lexery',
