@@ -89,6 +89,50 @@ class TestLexery(unittest.TestCase):
 
         self.assertEqual(expected, tokens)
 
+    def test_unmatched_identifier(self):
+        text = 'crop {} ( 20, 30, 40, 10 ) ; {}\n{}'
+
+        lexer = lexery.Lexer(
+            rules=[
+                lexery.Rule(identifier='identifier', pattern=re.compile(r'[a-zA-Z_][a-zA-Z_]*')),
+                lexery.Rule(identifier='lpar', pattern=re.compile(r'\(')),
+                lexery.Rule(identifier='number', pattern=re.compile(r'[1-9][0-9]*')),
+                lexery.Rule(identifier='rpar', pattern=re.compile(r'\)')),
+                lexery.Rule(identifier='comma', pattern=re.compile(r',')),
+                lexery.Rule(identifier='semi', pattern=re.compile(r';')),
+                lexery.Rule(identifier='space', pattern=re.compile(r' '))
+            ],
+            unmatched_identifier="unmatched")
+
+        tokens = lexer.lex(text=text)
+
+        expected = [[
+            lexery.Token('identifier', 'crop', 0, 0),
+            lexery.Token('space', ' ', 4, 0),
+            lexery.Token('unmatched', '{}', 5, 0),
+            lexery.Token('space', ' ', 7, 0),
+            lexery.Token('lpar', '(', 8, 0),
+            lexery.Token('space', ' ', 9, 0),
+            lexery.Token('number', '20', 10, 0),
+            lexery.Token('comma', ',', 12, 0),
+            lexery.Token('space', ' ', 13, 0),
+            lexery.Token('number', '30', 14, 0),
+            lexery.Token('comma', ',', 16, 0),
+            lexery.Token('space', ' ', 17, 0),
+            lexery.Token('number', '40', 18, 0),
+            lexery.Token('comma', ',', 20, 0),
+            lexery.Token('space', ' ', 21, 0),
+            lexery.Token('number', '10', 22, 0),
+            lexery.Token('space', ' ', 24, 0),
+            lexery.Token('rpar', ')', 25, 0),
+            lexery.Token('space', ' ', 26, 0),
+            lexery.Token('semi', ';', 27, 0),
+            lexery.Token('space', ' ', 28, 0),
+            lexery.Token('unmatched', '{}', 29, 0)
+        ], [lexery.Token('unmatched', '{}', 0, 1)]]
+
+        self.assertListEqual(expected, tokens)
+
 
 if __name__ == '__main__':
     unittest.main()

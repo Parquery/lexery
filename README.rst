@@ -66,6 +66,31 @@ Mind that if a part of the text can not be matched, a ``lexery.Error`` is raised
     some-identifier ( 23 )
         ^
 
+If you specify an ``unmatched_identifier``, all the unmatched characters are accumulated in tokens with that identifier:
+
+.. code-block:: python
+
+    >>> import lexery
+    >>> import re
+    >>> text = 'some-identifier ( 23 )-'
+    >>>
+    >>> lexer = lexery.Lexer(
+    ...     rules=[
+    ...         lexery.Rule(identifier='identifier', pattern=re.compile(r'[a-zA-Z_][a-zA-Z_]*')),
+    ...         lexery.Rule(identifier='number', pattern=re.compile(r'[1-9][0-9]*')),
+    ...     ],
+    ...     skip_whitespace=True,
+    ...     unmatched_identifier='unmatched')
+    >>> tokens = lexer.lex(text=text)
+    >>> assert tokens == [[
+    ...     lexery.Token('identifier', 'some', 0, 0),
+    ...    lexery.Token('unmatched', '-', 4, 0),
+    ...    lexery.Token('identifier', 'identifier', 5, 0),
+    ...    lexery.Token('unmatched', '(', 16, 0),
+    ...    lexery.Token('number', '23', 18, 0),
+    ...    lexery.Token('unmatched', ')-', 21, 0)]]
+
+
 Installation
 ============
 
