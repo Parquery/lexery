@@ -22,7 +22,8 @@ You define the lexing rules and lexery matches them iteratively as a look-up:
     >>>
     >>> lexer = lexery.Lexer(
     ...     rules=[
-    ...         lexery.Rule(identifier='identifier', pattern=re.compile(r'[a-zA-Z_][a-zA-Z_]*')),
+    ...         lexery.Rule(identifier='identifier',
+    ...             pattern=re.compile(r'[a-zA-Z_][a-zA-Z_]*')),
     ...         lexery.Rule(identifier='lpar', pattern=re.compile(r'\(')),
     ...         lexery.Rule(identifier='number', pattern=re.compile(r'[1-9][0-9]*')),
     ...         lexery.Rule(identifier='rpar', pattern=re.compile(r'\)')),
