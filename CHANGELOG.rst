@@ -1,3 +1,7 @@
+1.1.0
+=====
+* Added optional accumulator tokens for unmatched characters
+
 1.0.3
 =====
 * Added more examples and installation instructions to readme
