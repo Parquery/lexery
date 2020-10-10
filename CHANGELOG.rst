@@ -1,3 +1,7 @@
+1.1.1
+=====
+* Added support for Python 3.7 and 3.8
+
 1.1.0
 =====
 * Added optional accumulator tokens for unmatched characters
