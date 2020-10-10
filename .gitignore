@@ -8,3 +8,4 @@ dist/
 build/
 .coverage
 README.html
+venv/

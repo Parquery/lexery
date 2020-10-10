@@ -27,29 +27,29 @@ def main() -> int:
     if overwrite:
         subprocess.check_call(
             ["yapf", "--in-place", "--style=style.yapf", "--recursive", "tests", "lexery", "setup.py", "precommit.py"],
-            cwd=repo_root.as_posix())
+            cwd=str(repo_root))
     else:
         subprocess.check_call(
             ["yapf", "--diff", "--style=style.yapf", "--recursive", "tests", "lexery", "setup.py", "precommit.py"],
-            cwd=repo_root.as_posix())
+            cwd=str(repo_root))
 
     print("Mypy'ing...")
-    subprocess.check_call(["mypy", "lexery", "tests"], cwd=repo_root.as_posix())
+    subprocess.check_call(["mypy", "lexery", "tests"], cwd=str(repo_root))
 
     print("Pylint'ing...")
-    subprocess.check_call(["pylint", "--rcfile=pylint.rc", "tests", "lexery"], cwd=repo_root.as_posix())
+    subprocess.check_call(["pylint", "--rcfile=pylint.rc", "tests", "lexery"], cwd=str(repo_root))
 
     print("Pydocstyle'ing...")
-    subprocess.check_call(["pydocstyle", "lexery"], cwd=repo_root.as_posix())
+    subprocess.check_call(["pydocstyle", "lexery"], cwd=str(repo_root))
 
     print("Doctest'ing ...")
-    subprocess.check_call(['python', '-m', 'doctest', 'README.rst'])
+    subprocess.check_call([sys.executable, '-m', 'doctest', 'README.rst'])
     subprocess.check_call(
-        ['python', '-m', 'doctest'] + [pth.as_posix() for pth in pathlib.Path("lexery").glob("**/*.py")])
+        [sys.executable, '-m', 'doctest'] + [str(pth) for pth in pathlib.Path("lexery").glob("**/*.py")])
 
     print("Testing...")
     subprocess.check_call(
-        ["coverage", "run", "--source", "lexery", "-m", "unittest", "discover", "tests"], cwd=repo_root.as_posix())
+        ["coverage", "run", "--source", "lexery", "-m", "unittest", "discover", "tests"], cwd=str(repo_root))
 
     subprocess.check_call(["coverage", "report"])
 
