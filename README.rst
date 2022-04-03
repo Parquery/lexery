@@ -1,8 +1,9 @@
 Lexery
 ======
-.. image:: https://travis-ci.com/Parquery/lexery.svg?branch=master
-    :target: https://travis-ci.com/Parquery/lexery
-    :alt: Building status
+
+.. image:: https://github.com/Parquery/lexery/actions/workflows/ci.yml/badge.svg
+    :target: https://github.com/Parquery/lexery/actions/workflows/ci.yml
+    :alt: Continuous integration
 
 .. image:: https://coveralls.io/repos/github/Parquery/lexery/badge.svg?branch=master
     :target: https://coveralls.io/github/Parquery/lexery?branch=master
