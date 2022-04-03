@@ -23,7 +23,7 @@ class Token:
 
     def __repr__(self) -> str:
         """Represent token as a constructor."""
-        return 'Token({!r}, {!r}, {}, {})'.format(self.identifier, self.content, self.position, self.lineno)
+        return f'Token({self.identifier!r}, {self.content!r}, {self.position}, {self.lineno})'
 
     def __eq__(self, other: object) -> bool:
         """Check that tokens are equal by comparing their fields."""
@@ -71,8 +71,7 @@ class Error(Exception):
     def __str__(self) -> str:
         """Represent the error with a nice pointer as a multi-line message."""
         pointer = re.sub(NONTAB_RE, ' ', self.line[:self.position]) + '^'
-        txt = 'Unmatched text at line {} and position {}:\n{}\n{}'.format(self.lineno, self.position, self.line,
-                                                                          pointer)
+        txt = (f'Unmatched text at line {self.lineno} and position {self.position}:\n' f'{self.line}\n' f'{pointer}')
         return txt
 
 
