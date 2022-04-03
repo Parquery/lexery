@@ -1,3 +1,7 @@
+1.1.2
+=====
+* Added support for Python 3.9 and 3.10
+
 1.1.1
 =====
 * Added support for Python 3.7 and 3.8
