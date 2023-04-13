@@ -23,11 +23,14 @@ setup(
     author_email='marko@ristin.ch',
     # yapf: disable
     classifiers=[
-        'Development Status :: 5 - Production/Stable', 'Intended Audience :: Developers',
-        'License :: OSI Approved :: MIT License', 'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6', 'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8', 'Programming Language :: Python :: 3.9',
-        'Programming Language :: Python :: 3.10'
+        'Development Status :: 5 - Production/Stable',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: MIT License',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
     ],
     # yapf: enable
     keywords='lexer regexp regular expression',
@@ -35,7 +38,7 @@ setup(
     packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
     install_requires=[],
     extras_require={
-        'dev': ['mypy==0.942', 'pylint==2.13.4', 'yapf==0.20.2', 'coverage>=4.5.1,<5', 'pydocstyle==6.1.1']
+        'dev': ['mypy==1.2.0', 'pylint==2.17.2', 'yapf==0.20.2', 'coverage>=4.5.1,<5', 'pydocstyle==6.1.1']
     },
     py_modules=['lexery'],
     package_data={"lexery": ["py.typed"]})

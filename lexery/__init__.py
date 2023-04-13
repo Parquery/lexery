@@ -77,7 +77,7 @@ class Error(Exception):
     def __str__(self) -> str:
         """Represent the error with a nice pointer as a multi-line message."""
         pointer = re.sub(NONTAB_RE, ' ', self.line[:self.position]) + '^'
-        txt = (f'Unmatched text at line {self.lineno} and position {self.position}:\n' f'{self.line}\n' f'{pointer}')
+        txt = f'Unmatched text at line {self.lineno} and position {self.position}:\n{self.line}\n{pointer}'
         return txt
 
 
