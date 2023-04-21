@@ -60,10 +60,10 @@ class Rule:
         if self.next is not None and mtch is not None:
             pos = 0
             for r in self.next:
-                _mtch, _t = r.match(mtch.group(), pos, 0)
-                if _mtch:
-                    ret.append(_t)
-                    pos += len(_mtch.group())
+                another_mtch, another_t = r.match(mtch.group(), pos, 0)
+                if another_mtch:
+                    ret.append(another_t)
+                    pos += len(another_mtch.group())
         else:
             if mtch:
                 ret = mtch.group()
