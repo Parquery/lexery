@@ -210,10 +210,10 @@ class Lexer:
             while position < len(line):
                 mtched = False
                 for rule in self.rules:
-                    _line = line
-                    mtch, _token = rule.match(_line, position, lineno)
+                    another_line = line
+                    mtch, another_token = rule.match(another_line, position, lineno)
                     if mtch:
-                        token = _token
+                        token = another_token
                         lexing.emit_matched_token(token=token)
 
                         position = mtch.end()
