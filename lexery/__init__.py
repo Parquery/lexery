@@ -12,7 +12,6 @@ __status__ = 'Production'
 
 class Token:
     """Represent a token of a text."""
-
     def __init__(self, identifier: str = '', content: str = '', position: int = -1, lineno: int = -1) -> None:
         """
         Initialize.
@@ -42,8 +41,7 @@ class Token:
 
 class Rule:
     """Define a lexing rule."""
-
-    def __init__(self, identifier: str, pattern: Pattern, next=None) -> None:
+    def __init__(self, identifier: str, pattern: Pattern, next_rule=None) -> None:
         """
         Initialize.
 
@@ -52,15 +50,22 @@ class Rule:
         """
         self.identifier = identifier
         self.pattern = pattern
-        self.next = next
-        
+        self.next_rule = next_rule
+
     def match(self, text, pos, lno):
+        """
+        Match the rules with given text and position.
+
+        :param text: the given texte to match
+        :param pos: position of the text
+        :param lno: line number of the text
+        """
         mtch = self.pattern.match(text, pos)
         ret = []
-        if self.next is not None and mtch is not None:
+        if self.next_rule is not None and mtch is not None:
             pos = 0
-            for r in self.next:
-                another_mtch, another_t = r.match(mtch.group(), pos, 0)
+            for rule in self.next_rule:
+                another_mtch, another_t = rule.match(mtch.group(), pos, 0)
                 if another_mtch:
                     ret.append(another_t)
                     pos += len(another_mtch.group())
@@ -70,8 +75,6 @@ class Rule:
             else:
                 ret = ''
         return mtch, Token(self.identifier, content=ret, position=pos, lineno=lno)
-            
-        
 
 
 NONTAB_RE = re.compile(r'[^\t]')
@@ -79,7 +82,6 @@ NONTAB_RE = re.compile(r'[^\t]')
 
 class Error(Exception):
     """Is raised when no token rule applies."""
-
     def __init__(self, line: str, position: int, lineno: int) -> None:
         """
         Initialize.
@@ -106,7 +108,6 @@ WHITESPACE_RE = re.compile(r'\s')
 
 class _Lexing:
     """Keep state of a single lexing."""
-
     def __init__(self, unmatched_identifier: Optional[str] = None) -> None:
         """
         Initialize.
@@ -128,11 +129,10 @@ class _Lexing:
             assert self.unmatched_identifier is not None
 
             self.tokens[-1].append(
-                Token(
-                    identifier=self.unmatched_identifier,
-                    content=''.join(self._unmatched_accumulator),
-                    position=self._unmatched_pos,
-                    lineno=self._unmatched_lineno))
+                Token(identifier=self.unmatched_identifier,
+                      content=''.join(self._unmatched_accumulator),
+                      position=self._unmatched_pos,
+                      lineno=self._unmatched_lineno))
 
             self._unmatched_accumulator = []
 
@@ -144,11 +144,10 @@ class _Lexing:
             assert self.unmatched_identifier is not None
 
             self.tokens[-1].append(
-                Token(
-                    identifier=self.unmatched_identifier,
-                    content=''.join(self._unmatched_accumulator),
-                    position=self._unmatched_pos,
-                    lineno=self._unmatched_lineno))
+                Token(identifier=self.unmatched_identifier,
+                      content=''.join(self._unmatched_accumulator),
+                      position=self._unmatched_pos,
+                      lineno=self._unmatched_lineno))
 
             self._unmatched_accumulator = []
 
@@ -168,19 +167,19 @@ class _Lexing:
             assert self.unmatched_identifier is not None
 
             self.tokens[-1].append(
-                Token(
-                    identifier=self.unmatched_identifier,
-                    content=''.join(self._unmatched_accumulator),
-                    position=self._unmatched_pos,
-                    lineno=self._unmatched_lineno))
+                Token(identifier=self.unmatched_identifier,
+                      content=''.join(self._unmatched_accumulator),
+                      position=self._unmatched_pos,
+                      lineno=self._unmatched_lineno))
 
             self._unmatched_accumulator = []
 
 
 class Lexer:
     """Lex the text given the rules table."""
-
-    def __init__(self, rules: List[Rule], skip_whitespace: bool = False,
+    def __init__(self,
+                 rules: List[Rule],
+                 skip_whitespace: bool = False,
                  unmatched_identifier: Optional[str] = None) -> None:
         """
         Initialize.
