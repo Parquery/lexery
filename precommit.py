@@ -11,10 +11,11 @@ def main() -> int:
     Main routine
     """
     parser = argparse.ArgumentParser()
-    parser.add_argument("--overwrite",
-                        help="Overwrites the unformatted source files with the well-formatted code in place. "
-                        "If not set, an exception is raised if any of the files do not conform to the style guide.",
-                        action='store_true')
+    parser.add_argument(
+        "--overwrite",
+        help="Overwrites the unformatted source files with the well-formatted code in place. "
+        "If not set, an exception is raised if any of the files do not conform to the style guide.",
+        action='store_true')
 
     args = parser.parse_args()
 
@@ -39,16 +40,16 @@ def main() -> int:
     subprocess.check_call(["pylint", "--rcfile=pylint.rc", "tests", "lexery"], cwd=str(repo_root))
 
     print("Pydocstyle'ing...")
-    subprocess.check_call(["pydocstyle", "lexery", "--ignore=D203,D204,D212"], cwd=str(repo_root))
+    subprocess.check_call(["pydocstyle", "lexery"], cwd=str(repo_root))
 
     print("Doctest'ing ...")
     subprocess.check_call([sys.executable, '-m', 'doctest', 'README.rst'])
-    subprocess.check_call([sys.executable, '-m', 'doctest'] +
-                          [str(pth) for pth in pathlib.Path("lexery").glob("**/*.py")])
+    subprocess.check_call(
+        [sys.executable, '-m', 'doctest'] + [str(pth) for pth in pathlib.Path("lexery").glob("**/*.py")])
 
     print("Testing...")
-    subprocess.check_call(["coverage", "run", "--source", "lexery", "-m", "unittest", "discover", "tests"],
-                          cwd=str(repo_root))
+    subprocess.check_call(
+        ["coverage", "run", "--source", "lexery", "-m", "unittest", "discover", "tests"], cwd=str(repo_root))
 
     subprocess.check_call(["coverage", "report"])
 
