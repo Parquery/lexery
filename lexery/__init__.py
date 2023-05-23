@@ -43,7 +43,7 @@ class Token:
 class Rule:
     """Define a lexing rule."""
 
-    def __init__(self, identifier: str, pattern: Pattern) -> None:
+    def __init__(self, identifier: str, pattern: Pattern, next_rule=None) -> None:
         """
         Initialize.
 
@@ -52,6 +52,31 @@ class Rule:
         """
         self.identifier = identifier
         self.pattern = pattern
+        self.next_rule = next_rule
+
+    def match(self, text, pos, lno):
+        """
+        Match the rules with given text and position.
+
+        :param text: the given texte to match
+        :param pos: position of the text
+        :param lno: line number of the text
+        """
+        mtch = self.pattern.match(text, pos)
+        ret = []
+        if self.next_rule is not None and mtch is not None:
+            pos = 0
+            for rule in self.next_rule:
+                another_mtch, another_t = rule.match(mtch.group(), pos, 0)
+                if another_mtch:
+                    ret.append(another_t)
+                    pos += len(another_mtch.group())
+        else:
+            if mtch:
+                ret = mtch.group()
+            else:
+                ret = ''
+        return mtch, Token(self.identifier, content=ret, position=pos, lineno=lno)
 
 
 NONTAB_RE = re.compile(r'[^\t]')
@@ -190,11 +215,10 @@ class Lexer:
             while position < len(line):
                 mtched = False
                 for rule in self.rules:
-                    mtch = rule.pattern.match(line, position)
+                    another_line = line
+                    mtch, another_token = rule.match(another_line, position, lineno)
                     if mtch:
-                        token = Token(
-                            identifier=rule.identifier, content=mtch.group(), position=position, lineno=lineno)
-
+                        token = another_token
                         lexing.emit_matched_token(token=token)
 
                         position = mtch.end()
