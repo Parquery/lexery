@@ -1,3 +1,9 @@
+1.2.0
+=====
+* Added recursive rule
+* Dropped support for Python 3.6 due to its End-of-Life
+* Added support for Python 3.11
+
 1.1.2
 =====
 * Added support for Python 3.9 and 3.10
