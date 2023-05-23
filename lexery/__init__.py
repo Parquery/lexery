@@ -4,7 +4,7 @@ import re
 from typing import List, Pattern, Optional
 
 # Don't forget to update the version in setup.py and CHANGELOG.rst!
-__version__ = '1.1.2'
+__version__ = '1.2.0'
 __author__ = 'Marko Ristin'
 __license__ = 'MIT'
 __status__ = 'Production'
